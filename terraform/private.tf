@@ -1,17 +1,31 @@
 /*
-  Web Servers
+  Database Servers
 */
 resource "aws_security_group" "petapp" {
-    name = "vpc_web"
-    description = "Allow incoming HTTP connections."
+    name = "vpc_db"
+    description = "Allow incoming connections."
+
 
     ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["${var.vpc_cidr}"]
+    }
+    ingress {
+        from_port = -1
+        to_port = -1
+        protocol = "icmp"
+        cidr_blocks = ["${var.vpc_cidr}"]
+    }
+
+    egress {
         from_port = 80
         to_port = 80
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
- 
+
 
     vpc_id = "${aws_vpc.default.id}"
 
@@ -20,23 +34,16 @@ resource "aws_security_group" "petapp" {
     }
 }
 
-resource "aws_instance" "Petapp" {
+resource "aws_instance" "petapp-1" {
     ami = "${lookup(var.amis, var.aws_region)}"
     availability_zone = "eu-west-1a"
-    instance_type = "m1.small"
+    instance_type = "t2.micro"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.petapp.id}"]
-    subnet_id = "${aws_subnet.eu-west-1a-public.id}"
-    associate_public_ip_address = true
+    subnet_id = "${aws_subnet.eu-west-1a-private.id}"
     source_dest_check = false
 
-
     tags {
-        Name = "Petapp"
+        Name = "Patapp 1"
     }
-}
-
-resource "aws_eip" "Petapp" {
-    instance = "${aws_instance.jenkins.id}"
-    vpc = true
 }

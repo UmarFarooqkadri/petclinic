@@ -1,0 +1,1 @@
+ansible <hostname> -m copy -a 'src=/mnt/artefact/pet.jar dest=/path/to/pet.jar'

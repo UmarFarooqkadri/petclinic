@@ -1,0 +1,1 @@
+Since its a single jar I am using adhoc mode of ansible due to lack of time to work on playbook.
